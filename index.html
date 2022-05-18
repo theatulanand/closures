@@ -93,7 +93,7 @@
         #right div{
             padding: 30px;
             width: 40%;
-            height: 300px;
+            height: auto;
             border: 2px solid green;
             margin: auto;
             border-radius: 5px;
@@ -199,7 +199,7 @@
 
        let title = document.createElement("h1");
        title.id = "name";
-       name.innerText = data.Title;
+       title.innerText = data.Title;
 
        let poster = document.createElement("img");
        poster.id = "poster";
@@ -217,7 +217,7 @@
        type.id = "Type";
        type.innerText = "Type : " + data.Type;
 
-       card.append(poster,name,year,type);
+       card.append(poster,title,year,type);
        right.append(card);
     }
 
