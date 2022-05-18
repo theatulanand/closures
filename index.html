@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        #nevbar{
+            display : flex;
+            width: 80%;
+            justify-content: space-between;
+            align-items: center;
+            /* border: 2px solid red; */
+            margin: auto;
+            margin-top: 50px;
+            background-color: rgb(191, 206, 220);
+            color: white;
+            border-radius: 10px;
+            height: auto;
+            flex-wrap: warp;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        #nevbar h1{
+            padding-left: 20px;
+        }
+
+        #nevbar ul{
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #nevbar ul li{
+            padding: 10px 30px;
+            cursor: pointer;
+        }
+
+        #nevbar ul li:hover{
+            color:rgb(105, 105, 179)
+        }
+
+        #main{
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            justify-content: space-between;
+        }
+
+        #container {
+            width: 60%;
+            margin: auto;
+            text-align: center;
+            height: 500px;
+            margin-top: 50px;
+        }
+
+        #search input {
+            width: 96%;
+            padding: 10px;
+            font-size: 20px;
+            border-radius: 5px;
+            margin: auto;
+        }
+
+        #res {
+            width: 100%;
+            height: 450px;
+            padding: 10px;
+            gap: 20px;
+            column-gap: 3px;
+            overflow-y: scroll;
+        }
+
+        #res div{
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            margin-bottom: 20px;
+        }
+
+        #img {
+            width: 100px;
+            height: 100px;
+        }
+
+        #title{
+            text-align: left;
+            font-size: 20px;
+            margin-top: 15%;
+        }
+
+        #right div{
+            padding: 30px;
+            width: 40%;
+            height: 300px;
+            border: 2px solid green;
+            margin: auto;
+            border-radius: 5px;
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        #poster{
+            width: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="nevbar">
+        <h1 class="logo">MOVIES</h1>
+
+        <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./trending.html">Trending</a></li>
+        </ul>
+    </div>
+    <div id="main">
+        <div id="container">
+            <div id="search">
+                <input id = "query" type="text" placeholder="Search Movie Here" oninput="debounce()">
+            </div>
+            <div id="res">
+                <!-- <img id = "poster" src="" alt="atul">
+                <h2 id = "title" ></h2>hiii -->
+            </div>
+        </div>
+
+        <div id="right">
+
+        </div>
+    </div>
+</body>
+<script>
+
+    async function main() {
+
+        const query = document.getElementById("query").value;
+        let res = await fetch(`https://www.omdbapi.com/?apikey=c5c0956d&s=${query}`);
+        try {
+            let data =  await res.json();
+            showData(data.Search);
+        } catch (error) {
+            console.log("Error is : "+error);
+            alert("Not Found")
+        }
+    }
+
+    function showData(data){
+        console.log(data);
+
+        let displayBox = document.getElementById("res");
+
+        res.innerText = ""
+
+        data.forEach(function(ele,i){
+
+            let box = document.createElement("div");
+
+            let img = document.createElement("img");
+            img.id = "img";
+            img.src = ele.Poster;
+
+            if(ele.Poster == "N/A"){
+           img.src = "https://bitsofco.de/content/images/2018/12/broken-1.png"
+       }
+
+
+            let title = document.createElement("p");
+            title.id = "title";
+            title.innerText = ele.Title;
+
+            if(i%2 == 0){
+                box.style.backgroundColor = "#9999"
+            }
+
+            box.addEventListener('click', function () {
+                showDetails(ele);
+            });
+
+            box.append(img,title);
+
+            let line = document.createElement("hr");
+
+            displayBox.append(line,box);
+        });
+    }
+
+    function showDetails(data){
+
+        let right = document.getElementById("right");
+
+        right.innerHTML = "";
+
+        console.log(data)
+       let card = document.createElement("div");
+       card.id = "card";
+
+       let title = document.createElement("h1");
+       title.id = "name";
+       name.innerText = data.Title;
+
+       let poster = document.createElement("img");
+       poster.id = "poster";
+       poster.src = data.Poster;
+
+       if(data.Poster == "N/A"){
+           poster.src = "https://bitsofco.de/content/images/2018/12/broken-1.png"
+       }
+
+       let year = document.createElement("h3");
+       year.id = "year";
+       year.innerText = "Year : " + data.Year
+
+       let type = document.createElement("h3");
+       type.id = "Type";
+       type.innerText = "Type : " + data.Type;
+
+       card.append(poster,name,year,type);
+       right.append(card);
+    }
+
+
+    let timerId;
+    function debounce() {
+        if (timerId) {
+            clearTimeout(timerId)
+        }
+
+        timerId = setTimeout(function () {
+            main();
+        }, 1000)
+    }
+</script>
+
+</html>
